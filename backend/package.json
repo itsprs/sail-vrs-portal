@@ -21,7 +21,7 @@
 		"url": "https://github.com/itsprs"
 	},
 	"license": "UNLICENSED",
-	"type": "commonjs",
+	"type": "module",
 	"dependencies": {
 		"cors": "^2.8.6",
 		"dotenv": "^17.4.2",
