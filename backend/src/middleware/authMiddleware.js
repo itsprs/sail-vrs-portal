@@ -1,10 +1,5 @@
 import jwt from "jsonwebtoken"
 
-/**
- * authenticate
- * Verifies the Bearer JWT on every protected route.
- * Attaches { employee_id, role } to req.user on success.
- */
 export const authenticate = (req, res, next) => {
 	const authHeader = req.headers.authorization
 
@@ -23,11 +18,6 @@ export const authenticate = (req, res, next) => {
 	}
 }
 
-/**
- * requireRole
- * Factory that returns a middleware enforcing a specific role.
- * Usage: requireRole("Admin") or requireRole("Employee")
- */
 export const requireRole = (role) => (req, res, next) => {
 	if (req.user?.role !== role) {
 		return res.status(403).json({
