@@ -23,9 +23,9 @@ export const getEmployeeById = async (req, res) => {
 				? (
 						await pool.query(
 							`SELECT appraisal_year, grade, points
-               FROM grading_history
-               WHERE employee_id = ?
-               ORDER BY appraisal_year DESC`,
+							FROM grading_history
+							WHERE employee_id = ?
+							ORDER BY appraisal_year DESC`,
 							[id],
 						)
 					)[0]
@@ -39,7 +39,7 @@ export const getEmployeeById = async (req, res) => {
 					employee.basic_pay,
 					employee.da,
 					eligibility.serviceYears,
-					eligibility.remainingYears,
+					eligibility.remainingMonths,
 				)
 			: null
 
