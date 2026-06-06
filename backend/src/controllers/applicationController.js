@@ -1,5 +1,10 @@
 import { pool } from "../db.js"
-import { calculatePayout, checkEligibility } from "../utils/vrsCalculator.js"
+import {
+	calculateACP,
+	calculatePayout,
+	checkACP,
+	checkEligibility,
+} from "../utils/vrsCalculator.js"
 
 const VALID_STATUSES = ["Approved", "Rejected"]
 
@@ -24,7 +29,37 @@ export const createApplication = async (req, res) => {
 
 		if (!eligibility.isEligible) {
 			return res.status(400).json({
-				message: "Employee is not eligible for VRS.",
+				message: eligibility.message,
+			})
+		}
+
+		if (employee.designation_type === "Executive") {
+			const [gradingRows] = await pool.query(
+				`SELECT points FROM grading_history
+				 WHERE employee_id = ?
+				 ORDER BY appraisal_year DESC`,
+				[employee_id],
+			)
+
+			const acp = calculateACP(gradingRows)
+			const acpResult = checkACP(acp, eligibility.age)
+
+			if (!acpResult.passed) {
+				return res.status(400).json({
+					message: `Executive does not meet ACP criteria. ACP: ${acp} exceeds limit of ${acpResult.limit}.`,
+				})
+			}
+		}
+
+		const [[existing]] = await pool.query(
+			`SELECT application_id FROM vrs_applications
+			 WHERE employee_id = ? AND status = 'Pending'`,
+			[employee_id],
+		)
+
+		if (existing) {
+			return res.status(409).json({
+				message: "A pending application already exists for this employee.",
 			})
 		}
 
@@ -32,13 +67,13 @@ export const createApplication = async (req, res) => {
 			employee.basic_pay,
 			employee.da,
 			eligibility.serviceYears,
-			eligibility.remainingYears,
+			eligibility.remainingMonths,
 		)
 
 		const [result] = await pool.query(
 			`INSERT INTO vrs_applications
-       (employee_id, formula_a_value, formula_b_value, final_compensation, status)
-       VALUES (?, ?, ?, ?, 'Pending')`,
+			(employee_id, formula_a_value, formula_b_value, final_compensation, status)
+			VALUES (?, ?, ?, ?, 'Pending')`,
 			[employee_id, formulaA, formulaB, finalCompensation],
 		)
 
@@ -59,7 +94,7 @@ export const getAllApplications = async (_, res) => {
             SELECT a.*, e.designation_type, e.basic_pay
             FROM vrs_applications a
             JOIN employees e ON a.employee_id = e.employee_id
-            ORDER BY a.submission_timestamp DESC
+            ORDER BY a.submission_timestamp ASC
         `)
 
 		res.json(applications)
