@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs"
 import { pool } from "../db.js"
 import {
 	calculateACP,
@@ -14,6 +15,7 @@ export const createEmployee = async (req, res) => {
 			doj,
 			basic_pay,
 			da,
+			password,
 			grading_history,
 		} = req.body
 
@@ -23,7 +25,8 @@ export const createEmployee = async (req, res) => {
 			!dob ||
 			!doj ||
 			!basic_pay ||
-			!da
+			!da ||
+			!password
 		) {
 			return res.status(400).json({ message: "All fields are required." })
 		}
@@ -56,10 +59,11 @@ export const createEmployee = async (req, res) => {
 			return res.status(409).json({ message: "Employee ID already exists." })
 		}
 
+		const hashedPassword = await bcrypt.hash(password, 10)
 		await pool.query(
-			`INSERT INTO employees (employee_id, designation_type, dob, doj, basic_pay, da)
-			 VALUES (?, ?, ?, ?, ?, ?)`,
-			[employee_id, designation_type, dob, doj, basic_pay, da],
+			`INSERT INTO employees (employee_id, designation_type, dob, doj, basic_pay, da, password)
+			 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+			[employee_id, designation_type, dob, doj, basic_pay, da, hashedPassword],
 		)
 
 		if (designation_type === "Executive" && grading_history?.length > 0) {
@@ -127,8 +131,10 @@ export const getEmployeeById = async (req, res) => {
 				)
 			: null
 
+		const { password: _, ...safeProfile } = employee
+
 		res.json({
-			profile: employee,
+			profile: safeProfile,
 			gradingHistory,
 			vrsDetails: {
 				eligibility,

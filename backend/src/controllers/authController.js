@@ -1,11 +1,6 @@
+import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { pool } from "../db.js"
-
-/**
- * TODO: passwords are stored as plain text here for the initial build.
- * Before production, replace with bcrypt: npm install bcrypt
- * and hash on registration / compare on login.
- */
 
 export const login = async (req, res) => {
 	try {
@@ -22,7 +17,8 @@ export const login = async (req, res) => {
 			[employee_id],
 		)
 
-		if (!employee || employee.password !== password) {
+		const isMatch = await bcrypt.compare(password, employee.password)
+		if (!employee || !isMatch) {
 			return res.status(401).json({ message: "Invalid credentials." })
 		}
 
