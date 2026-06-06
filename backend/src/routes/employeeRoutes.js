@@ -1,8 +1,13 @@
 import express from "express"
-import { getEmployeeById } from "../controllers/employeeController.js"
+import {
+	createEmployee,
+	getEmployeeById,
+} from "../controllers/employeeController.js"
+import { authenticate, requireRole } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
-router.get("/:id", getEmployeeById)
+router.post("/", authenticate, requireRole("Admin"), createEmployee)
+router.get("/:id", authenticate, getEmployeeById)
 
 export default router
