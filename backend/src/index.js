@@ -1,6 +1,7 @@
 import cors from "cors"
 import express from "express"
 import { pool } from "./db.js"
+import applicationRoutes from "./routes/applicationRoutes.js"
 import employeeRoutes from "./routes/employeeRoutes.js"
 
 const app = express()
@@ -28,6 +29,7 @@ app.get("/api/health", async (_, res) => {
 })
 
 app.use("/api/employees", employeeRoutes)
+app.use("/api/applications", applicationRoutes)
 
 app.listen(PORT, () =>
 	console.log(`🚀 Server running at http://localhost:${PORT}`),
