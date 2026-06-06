@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS sail_vrs;
-USE sail_vrs;
-
 CREATE TABLE IF NOT EXISTS employees (
     employee_id     VARCHAR(20)  PRIMARY KEY,
     designation_type ENUM('Executive', 'Non-Executive') NOT NULL,
