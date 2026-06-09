@@ -1,12 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
-import ApplyPage from "@/pages/ApplyPage"
-import ApplicationDetailPage from "@/pages/admin/ApplicationDetailPage"
-import QueuePage from "@/pages/admin/QueuePage"
-import CompensationPage from "@/pages/CompensationPage"
-import DashboardPage from "@/pages/DashboardPage"
 import LoginPage from "@/pages/LoginPage"
-import StatusPage from "@/pages/StatusPage"
 import ProtectedRoute from "@/routes/ProtectedRoute"
+import ApplyPage from "./pages/ApplyPage"
+import ApplicationDetailPage from "./pages/admin/ApplicationDetailPage"
+import QueuePage from "./pages/admin/QueuePage"
+import CompensationPage from "./pages/CompensationPage"
+import DashboardPage from "./pages/DashboardPage"
+import StatusPage from "./pages/StatusPage"
 
 export default function App() {
   const role = localStorage.getItem("role")

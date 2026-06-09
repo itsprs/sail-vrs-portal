@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,6 +12,16 @@ import { login } from "@/services/api"
 
 export default function LoginPage() {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    const role = localStorage.getItem("role")
+    if (token && role) {
+      navigate(role === "Admin" ? "/admin/queue" : "/dashboard", {
+        replace: true,
+      })
+    }
+  }, [navigate])
 
   const [employeeId, setEmployeeId] = useState("")
   const [password, setPassword] = useState("")
