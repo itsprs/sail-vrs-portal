@@ -1,0 +1,100 @@
+import { ClipboardCheck } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@/components/ui/item"
+import { Separator } from "@/components/ui/separator"
+import type { ApplicationStatus, VRSApplication } from "@/types"
+import { formatCurrency, formatDateTime } from "@/utils/format"
+
+interface ApplicationDetailCardProps {
+  application: VRSApplication
+}
+
+const statusVariant: Record<
+  ApplicationStatus,
+  "default" | "secondary" | "destructive"
+> = {
+  Pending: "secondary",
+  Approved: "default",
+  Rejected: "destructive",
+}
+
+export default function ApplicationDetailCard({
+  application,
+}: ApplicationDetailCardProps) {
+  const {
+    application_id,
+    employee_id,
+    designation_type,
+    submission_timestamp,
+    status,
+    formula_a_value,
+    formula_b_value,
+    final_compensation,
+  } = application
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <ClipboardCheck className="size-4 text-muted-foreground" />
+            Application #{application_id}
+          </span>
+          <Badge variant={statusVariant[status]} className="text-sm px-3 py-1">
+            {status}
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <ItemGroup>
+          <Item size="sm">
+            <ItemContent>
+              <ItemDescription>Employee ID</ItemDescription>
+              <ItemTitle>{employee_id}</ItemTitle>
+            </ItemContent>
+          </Item>
+          <Item size="sm">
+            <ItemContent>
+              <ItemDescription>Designation Type</ItemDescription>
+              <ItemTitle>{designation_type}</ItemTitle>
+            </ItemContent>
+          </Item>
+          <Item size="sm">
+            <ItemContent>
+              <ItemDescription>Submitted On</ItemDescription>
+              <ItemTitle>{formatDateTime(submission_timestamp)}</ItemTitle>
+            </ItemContent>
+          </Item>
+          <Separator />
+          <Item size="sm">
+            <ItemContent>
+              <ItemDescription>Formula A</ItemDescription>
+              <ItemTitle>{formatCurrency(formula_a_value)}</ItemTitle>
+            </ItemContent>
+          </Item>
+          <Item size="sm">
+            <ItemContent>
+              <ItemDescription>Formula B</ItemDescription>
+              <ItemTitle>{formatCurrency(formula_b_value)}</ItemTitle>
+            </ItemContent>
+          </Item>
+          <Item size="sm" variant="muted">
+            <ItemContent>
+              <ItemDescription>Final VR Compensation (75%)</ItemDescription>
+              <ItemTitle className="text-xl font-semibold">
+                {formatCurrency(final_compensation)}
+              </ItemTitle>
+            </ItemContent>
+          </Item>
+        </ItemGroup>
+      </CardContent>
+    </Card>
+  )
+}
