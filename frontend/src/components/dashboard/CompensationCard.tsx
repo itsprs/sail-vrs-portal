@@ -1,13 +1,7 @@
 import { TrendingUp } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Item,
   ItemActions,
@@ -17,11 +11,17 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import type { Compensation } from "@/types"
-import { formatCurrency } from "@/utils/format"
 
 interface CompensationCardProps {
   compensation: Compensation
 }
+
+const formatCurrency = (val: string | number) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(val))
 
 export default function CompensationCard({
   compensation,
@@ -56,27 +56,25 @@ export default function CompensationCard({
               <ItemTitle>{compensation.selectedBasket} (lower value)</ItemTitle>
             </ItemContent>
           </Item>
+          <Item size="sm" variant="muted">
+            <ItemContent>
+              <ItemDescription>Final VR Compensation (75%)</ItemDescription>
+              <ItemTitle className="text-lg font-semibold">
+                {formatCurrency(compensation.finalCompensation)}
+              </ItemTitle>
+            </ItemContent>
+            <ItemActions>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/compensation")}
+              >
+                Full breakdown
+              </Button>
+            </ItemActions>
+          </Item>
         </ItemGroup>
       </CardContent>
-      <CardFooter>
-        <Item size="sm" className="rounded-none">
-          <ItemContent>
-            <ItemDescription>Final VR Compensation (75%)</ItemDescription>
-            <ItemTitle className="text-lg font-semibold">
-              {formatCurrency(compensation.finalCompensation)}
-            </ItemTitle>
-          </ItemContent>
-          <ItemActions>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/compensation")}
-            >
-              Full breakdown
-            </Button>
-          </ItemActions>
-        </Item>
-      </CardFooter>
     </Card>
   )
 }
