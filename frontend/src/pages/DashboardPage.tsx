@@ -2,7 +2,9 @@ import { ClipboardList } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import AppHeader from "@/components/AppHeader"
+import CompensationCard from "@/components/dashboard/CompensationCard"
 import EmployeeProfileCard from "@/components/dashboard/EmployeeProfileCard"
+import SalaryCard from "@/components/dashboard/SalaryCard"
 import PageError from "@/components/PageError"
 import PageLoader from "@/components/PageLoader"
 import { Badge } from "@/components/ui/badge"
@@ -13,7 +15,6 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/components/ui/item"
-import { Separator } from "@/components/ui/separator"
 import { getEmployee } from "@/services/api"
 import type { EmployeeResponse } from "@/types"
 
@@ -36,7 +37,7 @@ export default function DashboardPage() {
   if (error || !data) return <PageError message={error} />
 
   const { profile, vrsDetails } = data
-  const { eligibility } = vrsDetails
+  const { eligibility, compensation } = vrsDetails
 
   return (
     <div className="min-h-svh bg-background">
@@ -58,8 +59,9 @@ export default function DashboardPage() {
             {eligibility.isEligible ? "Eligible for VRS" : "Not Eligible"}
           </Badge>
         </div>
-        <Separator />
         <EmployeeProfileCard profile={profile} eligibility={eligibility} />
+        <SalaryCard profile={profile} compensation={compensation} />
+        {compensation && <CompensationCard compensation={compensation} />}
         <Item variant="muted">
           <ItemContent>
             <ItemDescription>Eligibility Status</ItemDescription>

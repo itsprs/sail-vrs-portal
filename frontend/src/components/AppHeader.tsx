@@ -15,7 +15,7 @@ export default function AppHeader({ employeeId }: AppHeaderProps) {
   }
 
   return (
-    <header className="border-b border-border px-6 py-4 flex items-center justify-between">
+    <header className="border-b border-border px-6 py-4 flex items-center justify-between sticky top-0 bg-background z-10">
       <div className="flex items-center gap-3">
         <img src="/favicon.svg" alt="SAIL" className="size-7" />
         <span className="text-sm font-medium text-foreground">
