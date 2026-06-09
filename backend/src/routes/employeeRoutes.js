@@ -1,7 +1,7 @@
 import express from "express"
 import {
-	createEmployee,
-	getEmployeeById,
+  createEmployee,
+  getEmployeeById,
 } from "../controllers/employeeController.js"
 import { authenticate, requireRole } from "../middleware/authMiddleware.js"
 

@@ -1,24 +1,24 @@
 {
-	"name": "sail-vrs-portal",
-	"version": "1.0.0",
-	"description": "Voluntary Retirement Scheme Management System for Steel Authority of India Limited",
-	"private": true,
-	"license": "UNLICENSED",
-	"author": {
-		"name": "Pratham Raj Singh",
-		"email": "prathamrajgi@gmail.com",
-		"url": "https://imprs.vercel.app"
-	},
-	"scripts": {
-		"dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-		"dev:backend": "npm run dev --prefix backend",
-		"dev:frontend": "npm run dev --prefix frontend",
-		"biome:format": "npx @biomejs/biome format --write .",
-		"biome:lint": "npx @biomejs/biome lint --write .",
-		"biome:check": "npx @biomejs/biome check --write ."
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.4.16",
-		"concurrently": "^9.1.2"
-	}
+  "name": "sail-vrs-portal",
+  "version": "1.0.0",
+  "description": "Voluntary Retirement Scheme Management System for Steel Authority of India Limited",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Pratham Raj Singh",
+    "email": "prathamrajgi@gmail.com",
+    "url": "https://imprs.vercel.app"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "biome:format": "npx @biomejs/biome format --write .",
+    "biome:lint": "npx @biomejs/biome lint --write .",
+    "biome:check": "npx @biomejs/biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.16",
+    "concurrently": "^9.1.2"
+  }
 }

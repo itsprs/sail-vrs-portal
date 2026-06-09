@@ -1,8 +1,8 @@
 import express from "express"
 import {
-	createApplication,
-	getAllApplications,
-	updateApplicationStatus,
+  createApplication,
+  getAllApplications,
+  updateApplicationStatus,
 } from "../controllers/applicationController.js"
 
 const router = express.Router()

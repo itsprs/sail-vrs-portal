@@ -12,21 +12,21 @@ app.use(cors())
 app.use(express.json())
 
 app.get("/api/health", async (_, res) => {
-	try {
-		await pool.query("SELECT 1")
-		res.json({
-			status: "success",
-			message: "API running",
-			database: "connected",
-		})
-	} catch (error) {
-		console.error(error)
-		res.status(500).json({
-			status: "error",
-			message: "Database connection failed",
-			error: error.message,
-		})
-	}
+  try {
+    await pool.query("SELECT 1")
+    res.json({
+      status: "success",
+      message: "API running",
+      database: "connected",
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      status: "error",
+      message: "Database connection failed",
+      error: error.message,
+    })
+  }
 })
 
 app.use("/api/auth", authRoutes)
@@ -34,5 +34,5 @@ app.use("/api/employees", employeeRoutes)
 app.use("/api/applications", applicationRoutes)
 
 app.listen(PORT, () =>
-	console.log(`🚀 Server running at http://localhost:${PORT}`),
+  console.log(`🚀 Server running at http://localhost:${PORT}`),
 )
