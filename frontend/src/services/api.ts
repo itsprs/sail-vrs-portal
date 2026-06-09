@@ -1,5 +1,11 @@
 import axios from "axios"
-import type { EmployeeResponse, LoginResponse, VRSApplication } from "@/types"
+import type {
+  EmployeeResponse,
+  LoginRequest,
+  LoginResponse,
+  UpdateStatusRequest,
+  VRSApplication,
+} from "@/types"
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -13,35 +19,39 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-export const authService = {
-  login: async (
-    employee_id: string,
-    password: string,
-  ): Promise<LoginResponse> => {
-    const { data } = await api.post("/auth/login", { employee_id, password })
-    return data
-  },
+export const login = async (data: LoginRequest): Promise<LoginResponse> => {
+  const res = await api.post<LoginResponse>("/auth/login", data)
+  return res.data
 }
 
-export const employeeService = {
-  getProfile: async (id: string): Promise<EmployeeResponse> => {
-    const { data } = await api.get(`/employees/${id}`)
-    return data
-  },
+export const getEmployee = async (id: string): Promise<EmployeeResponse> => {
+  const res = await api.get<EmployeeResponse>(`/employees/${id}`)
+  return res.data
 }
 
-export const applicationService = {
-  submitApplication: async (): Promise<void> => {
-    await api.post("/applications")
-  },
-  getAllApplications: async (): Promise<VRSApplication[]> => {
-    const { data } = await api.get("/applications")
-    return data
-  },
-  updateStatus: async (
-    id: number,
-    status: "Approved" | "Rejected",
-  ): Promise<void> => {
-    await api.patch(`/applications/${id}/status`, { status })
-  },
+export const submitApplication = async (
+  employee_id: string,
+): Promise<{ applicationId: number; message: string }> => {
+  const res = await api.post("/applications", { employee_id })
+  return res.data
 }
+
+export const getAllApplications = async (): Promise<VRSApplication[]> => {
+  const res = await api.get<VRSApplication[]>("/applications")
+  return res.data
+}
+
+export const getApplication = async (id: number): Promise<VRSApplication> => {
+  const res = await api.get<VRSApplication>(`/applications/${id}`)
+  return res.data
+}
+
+export const updateApplicationStatus = async (
+  id: number,
+  data: UpdateStatusRequest,
+): Promise<{ message: string }> => {
+  const res = await api.patch(`/applications/${id}/status`, data)
+  return res.data
+}
+
+export default api

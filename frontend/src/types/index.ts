@@ -1,10 +1,21 @@
+export interface LoginRequest {
+  employee_id: string
+  password: string
+}
+
 export interface LoginResponse {
   status: string
   token: string
   role: "Employee" | "Admin"
 }
 
-export interface EmployeeProfile {
+export interface GradingHistory {
+  appraisal_year: string
+  grade: string
+  points: number
+}
+
+export interface Employee {
   employee_id: string
   designation_type: "Executive" | "Non-Executive"
   dob: string
@@ -13,12 +24,6 @@ export interface EmployeeProfile {
   da: number
   role: "Employee" | "Admin"
   created_at: string
-}
-
-export interface GradingHistory {
-  appraisal_year: string
-  grade: string
-  points: number
 }
 
 export interface Eligibility {
@@ -37,24 +42,38 @@ export interface Compensation {
   finalCompensation: string
 }
 
-export interface EmployeeResponse {
-  profile: EmployeeProfile
-  gradingHistory: GradingHistory[]
-  vrsDetails: {
-    eligibility: Eligibility
-    averageCreditPoint: string
-    compensation: Compensation | null
-  }
+export interface VRSDetails {
+  eligibility: Eligibility
+  averageCreditPoint: string
+  compensation: Compensation | null
 }
+
+export interface EmployeeResponse {
+  profile: Employee
+  gradingHistory: GradingHistory[]
+  vrsDetails: VRSDetails
+}
+
+export type ApplicationStatus = "Pending" | "Approved" | "Rejected"
 
 export interface VRSApplication {
   application_id: number
   employee_id: string
   submission_timestamp: string
-  status: "Pending" | "Approved" | "Rejected"
+  status: ApplicationStatus
   formula_a_value: number
   formula_b_value: number
   final_compensation: number
   designation_type: "Executive" | "Non-Executive"
   basic_pay: number
+}
+
+export interface UpdateStatusRequest {
+  status: "Approved" | "Rejected"
+}
+
+export interface AuthUser {
+  employee_id: string
+  role: "Employee" | "Admin"
+  token: string
 }
