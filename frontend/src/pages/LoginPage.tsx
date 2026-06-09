@@ -67,7 +67,7 @@ export default function LoginPage() {
           </h1>
           <p className="text-background opacity-40 text-sm mt-4 max-w-xs leading-relaxed">
             A voluntary option for eligible SAIL employees to retire before the
-            age of 60 — with a compensation package and continued retirement
+            age of 60 - with a compensation package and continued retirement
             benefits.
           </p>
         </div>
