@@ -9,42 +9,42 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { login } from "@/services/api"
+import { ROUTES } from "@/utils/constants"
+import { extractErrorMessage } from "@/utils/errors"
 
 export default function LoginPage() {
   const navigate = useNavigate()
-
-  useEffect(() => {
-    const token = localStorage.getItem("token")
-    const role = localStorage.getItem("role")
-    if (token && role) {
-      navigate(role === "Admin" ? "/admin/queue" : "/dashboard", {
-        replace: true,
-      })
-    }
-  }, [navigate])
-
   const [employeeId, setEmployeeId] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    const role = localStorage.getItem("role")
+    if (token && role) {
+      navigate(role === "Admin" ? ROUTES.adminQueue : ROUTES.dashboard, {
+        replace: true,
+      })
+    }
+  }, [navigate])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     setLoading(true)
-
     try {
       const res = await login({ employee_id: employeeId, password })
       localStorage.setItem("token", res.token)
       localStorage.setItem("role", res.role)
       localStorage.setItem("employee_id", employeeId)
-      navigate(res.role === "Admin" ? "/admin/queue" : "/dashboard", {
+      navigate(res.role === "Admin" ? ROUTES.adminQueue : ROUTES.dashboard, {
         replace: true,
       })
-    } catch (err: unknown) {
-      const axiosMsg = (err as { response?: { data?: { message?: string } } })
-        ?.response?.data?.message
-      setError(axiosMsg ?? "Invalid credentials. Please try again.")
+    } catch (err) {
+      setError(
+        extractErrorMessage(err, "Invalid credentials. Please try again."),
+      )
     } finally {
       setLoading(false)
     }

@@ -1,5 +1,6 @@
 import { ClipboardCheck } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import CompensationRows from "@/components/shared/CompensationRows"
+import StatusBadge from "@/components/shared/StatusBadge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Item,
@@ -8,21 +9,11 @@ import {
   ItemGroup,
   ItemTitle,
 } from "@/components/ui/item"
-import { Separator } from "@/components/ui/separator"
-import type { ApplicationStatus, VRSApplication } from "@/types"
-import { formatCurrency, formatDateTime } from "@/utils/format"
+import type { VRSApplication } from "@/types"
+import { formatDateTime } from "@/utils/format"
 
 interface ApplicationDetailCardProps {
   application: VRSApplication
-}
-
-const statusVariant: Record<
-  ApplicationStatus,
-  "default" | "secondary" | "destructive"
-> = {
-  Pending: "secondary",
-  Approved: "default",
-  Rejected: "destructive",
 }
 
 export default function ApplicationDetailCard({
@@ -47,9 +38,7 @@ export default function ApplicationDetailCard({
             <ClipboardCheck className="size-4 text-muted-foreground" />
             Application #{application_id}
           </span>
-          <Badge variant={statusVariant[status]} className="text-sm px-3 py-1">
-            {status}
-          </Badge>
+          <StatusBadge status={status} className="text-sm px-3 py-1" />
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -72,27 +61,11 @@ export default function ApplicationDetailCard({
               <ItemTitle>{formatDateTime(submission_timestamp)}</ItemTitle>
             </ItemContent>
           </Item>
-          <Separator />
-          <Item size="sm">
-            <ItemContent>
-              <ItemDescription>Formula A</ItemDescription>
-              <ItemTitle>{formatCurrency(formula_a_value)}</ItemTitle>
-            </ItemContent>
-          </Item>
-          <Item size="sm">
-            <ItemContent>
-              <ItemDescription>Formula B</ItemDescription>
-              <ItemTitle>{formatCurrency(formula_b_value)}</ItemTitle>
-            </ItemContent>
-          </Item>
-          <Item size="sm" variant="muted">
-            <ItemContent>
-              <ItemDescription>Final VR Compensation (75%)</ItemDescription>
-              <ItemTitle className="text-xl font-semibold">
-                {formatCurrency(final_compensation)}
-              </ItemTitle>
-            </ItemContent>
-          </Item>
+          <CompensationRows
+            formulaA={formula_a_value}
+            formulaB={formula_b_value}
+            finalCompensation={final_compensation}
+          />
         </ItemGroup>
       </CardContent>
     </Card>

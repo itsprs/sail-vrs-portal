@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import StatusBadge from "@/components/shared/StatusBadge"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,7 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -22,21 +22,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { updateApplicationStatus } from "@/services/api"
-import type { ApplicationStatus, VRSApplication } from "@/types"
+import type { VRSApplication } from "@/types"
+import { ROUTES } from "@/utils/constants"
+import { extractErrorMessage } from "@/utils/errors"
 import { formatCurrency, formatDateTime } from "@/utils/format"
 
 interface ApplicationsTableProps {
   applications: VRSApplication[]
   onStatusChange: () => void
-}
-
-const statusVariant: Record<
-  ApplicationStatus,
-  "default" | "secondary" | "destructive"
-> = {
-  Pending: "secondary",
-  Approved: "default",
-  Rejected: "destructive",
 }
 
 export default function ApplicationsTable({
@@ -50,8 +43,8 @@ export default function ApplicationsTable({
       await updateApplicationStatus(id, { status })
       toast.success(`Application ${status.toLowerCase()} successfully.`)
       onStatusChange()
-    } catch {
-      toast.error("Failed to update status. Please try again.")
+    } catch (err) {
+      toast.error(extractErrorMessage(err))
     }
   }
 
@@ -73,7 +66,9 @@ export default function ApplicationsTable({
           <TableRow
             key={app.application_id}
             className="cursor-pointer hover:bg-muted/50"
-            onClick={() => navigate(`/admin/queue/${app.application_id}`)}
+            onClick={() =>
+              navigate(ROUTES.adminQueueDetail(app.application_id))
+            }
           >
             <TableCell className="text-muted-foreground text-xs">
               {index + 1}
@@ -89,7 +84,7 @@ export default function ApplicationsTable({
               {formatCurrency(app.final_compensation)}
             </TableCell>
             <TableCell>
-              <Badge variant={statusVariant[app.status]}>{app.status}</Badge>
+              <StatusBadge status={app.status} />
             </TableCell>
             <TableCell className="text-right">
               {app.status === "Pending" && (
@@ -109,13 +104,11 @@ export default function ApplicationsTable({
                           Approve Application?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will approve the VRS application for{" "}
-                          <strong>{app.employee_id}</strong> with a final
-                          compensation of{" "}
+                          Approve for <strong>{app.employee_id}</strong> —{" "}
                           <strong>
                             {formatCurrency(app.final_compensation)}
                           </strong>
-                          . This action cannot be undone.
+                          . This cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -130,6 +123,7 @@ export default function ApplicationsTable({
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button size="sm" variant="destructive">
@@ -140,9 +134,9 @@ export default function ApplicationsTable({
                       <AlertDialogHeader>
                         <AlertDialogTitle>Reject Application?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will reject the VRS application for{" "}
-                          <strong>{app.employee_id}</strong>. This action cannot
-                          be undone.
+                          Reject application for{" "}
+                          <strong>{app.employee_id}</strong>. This cannot be
+                          undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
