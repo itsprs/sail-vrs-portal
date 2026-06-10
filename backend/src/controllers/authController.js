@@ -17,10 +17,12 @@ export const login = async (req, res) => {
       [employee_id],
     )
 
-    const isMatch = await bcrypt.compare(password, employee.password)
-    if (!employee || !isMatch) {
+    if (!employee)
       return res.status(401).json({ message: "Invalid credentials." })
-    }
+
+    const isMatch = await bcrypt.compare(password, employee.password)
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials." })
 
     const token = jwt.sign(
       { employee_id: employee.employee_id, role: employee.role },

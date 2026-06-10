@@ -91,13 +91,36 @@ export const createApplication = async (req, res) => {
 export const getAllApplications = async (_, res) => {
   try {
     const [applications] = await pool.query(`
-            SELECT a.*, e.designation_type, e.basic_pay
-            FROM vrs_applications a
-            JOIN employees e ON a.employee_id = e.employee_id
-            ORDER BY a.submission_timestamp ASC
-        `)
+			SELECT a.*, e.designation_type, e.basic_pay
+			FROM vrs_applications a
+			JOIN employees e ON a.employee_id = e.employee_id
+			ORDER BY a.submission_timestamp ASC
+		`)
 
     res.json(applications)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: "Internal server error." })
+  }
+}
+
+export const getApplicationById = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const [[application]] = await pool.query(
+      `SELECT a.*, e.designation_type, e.basic_pay
+			 FROM vrs_applications a
+			 JOIN employees e ON a.employee_id = e.employee_id
+			 WHERE a.application_id = ?`,
+      [id],
+    )
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found." })
+    }
+
+    res.json(application)
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: "Internal server error." })
